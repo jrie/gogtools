@@ -1,8 +1,7 @@
 # gogtools - version detector and retriever
-A windows, linux, and osx Python script which attempts to identify and list the versions of installed Gog games and DLCs.
+A *windows*, *linux*, and *osx* Python script which attempts to identify and list the versions of installed Gog games and DLC, as well as an option to compare versions online at Gog.
 
-In addition, the version number can be directly retrieved from Gog and updated version, if any, are displayed.
-Lastly, it is possible to check for installers and versions for a particular operating system - if a game or DLC is not available, this is shown too.
+It is possible to check for installers and versions for a particular operating system - if a game or DLC is not available, this is shown too.
 By default, with no option set, the current operating system detected is used for querying for versions.
 
 ## Requirements for this tool:
