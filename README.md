@@ -6,7 +6,7 @@ A collection of tools to work on and with Gog.com
 ### gogtools - version detector and retriever
 A *windows*, *linux*, and *osx* Python script which attempts to identify and list the versions of installed Gog games and DLCs.
 
-![version detector and retriever in action](https://github.com/jrie/gogtools/assets/5701785/0a18b287-5b09-464c-a3eb-01e3f96c3ac2)
+![image](https://github.com/jrie/gogtools/assets/5701785/0a18b287-5b09-464c-a3eb-01e3f96c3ac2)
 
 
 In addition, the version number can be directly retrieved from Gog and updated version, if any, are displayed.
