@@ -7,7 +7,11 @@ A collection of tools to work on and with Gog.com
 A *windows*, *linux*, and *osx* Python script which attempts to identify and list the versions of installed Gog games and DLC, as well as an option to compare versions online at Gog.
 
 #### Screenshot in Windows Powershell:
-![image](https://github.com/jrie/gogtools/assets/5701785/0a18b287-5b09-464c-a3eb-01e3f96c3ac2)
+![version_detector_windows](https://github.com/jrie/gogtools/assets/5701785/0a18b287-5b09-464c-a3eb-01e3f96c3ac2)
+
+#### Screenshot in Linux:
+![version_detector_linux](https://github.com/user-attachments/assets/d79b928d-2f4a-4830-ad17-05f2c1a7ce75)
+
 
 More information can be found [here](version-detector-retriever.md).
 
