@@ -23,7 +23,7 @@ from requests import get as requestget
 # Our main, nice!
 if __name__ == "__main__":
     appName = "gogtools-version detector"
-    appVersion = "v0.0.1"
+    appVersion = "v0.0.2"
     appGithub = "https://github.com/jrie/gogtools"
 
     sysString = getSystemString()
@@ -36,6 +36,7 @@ if __name__ == "__main__":
 
     gogDirectory = oscurdir
     makeRemoteCheck = False
+    ignoreDLC = False
 
     versionFiles = []
 
@@ -55,7 +56,7 @@ if __name__ == "__main__":
         print(f"{appName}: Running in current folder.\n")
     else:
         options, arguments = getopt(
-            argv[1:], "i:o:r", ["gogDirectory", "operatingSystem", "makeRemoteCheck"]
+            argv[1:], "i:o:rd", ["gogDirectory", "operatingSystem", "makeRemoteCheck", "ignoreDLC"]
         )
 
         for option, value in options:
@@ -63,6 +64,8 @@ if __name__ == "__main__":
                 gogDirectory = value.rstrip(pathSeparator).strip()
             elif option == "-r":
                 makeRemoteCheck = True
+            elif option == "-d":
+                ignoreDLC = True
             elif option == '-o':
                 operatingSystemName = value.lower().strip()
                 if operatingSystemName in ['windows', 'linux', 'osx']:
@@ -85,7 +88,17 @@ if __name__ == "__main__":
             print(f'{appName}: "{gogDirectory}" is not existing.')
             exit(4)
 
-    print(f"{appName}: Starting detection.. this might take a moment.\n")
+    if makeRemoteCheck:
+        print(f"{appName}: Remote check enabled.")
+    else:
+        print(f"{appName}: Remote check is disabled. Enable using '-r' parameter.")
+
+    if ignoreDLC:
+        print(f"{appName}: DLC detection is disabled.")
+    else:
+        print(f"{appName}: DLC detection is enabled. Disable using '-d' parameter.")
+
+    print(f"\n{appName}: Starting detection.. this might take a moment.\n")
 
     gameRootFolder = f"{gogDirectory}{pathSeparator}"
     detectedGameFolders = sorted(oslistdir(gameRootFolder))
@@ -160,6 +173,9 @@ if __name__ == "__main__":
                     rootId = jsonData["rootGameId"]
 
                     if gameId != rootId:
+                        if ignoreDLC:
+                            continue
+
                         if not rootId in gameDLCs:
                             gameDLCs[rootId] = [gameId]
                         else:
