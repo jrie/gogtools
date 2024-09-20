@@ -6,11 +6,17 @@ A collection of tools to work on and with Gog.com
 ### gogtools - version detector and retriever
 A *windows*, *linux*, and *osx* Python script which attempts to identify and list the versions of installed Gog games and DLC, as well as an option to compare versions online at Gog.
 
+Also now supports HTML output using "-w" parameter.
+
+
 #### Screenshot in Windows Powershell:
 ![version_detector_windows](https://github.com/jrie/gogtools/assets/5701785/0a18b287-5b09-464c-a3eb-01e3f96c3ac2)
 
 #### Screenshot in Linux:
 ![version_detector_linux](https://github.com/user-attachments/assets/d79b928d-2f4a-4830-ad17-05f2c1a7ce75)
+
+#### Screenshot HTML output with links
+![gvd_html_output](https://github.com/user-attachments/assets/db4491b2-0334-4849-9740-e1dd475a8794)
 
 
 More information can be found [here](version-detector-retriever.md).
@@ -23,3 +29,4 @@ This script can read out the order page details inside the browser if the order 
 In addition a summary of total paid, average paid, average discount, and other stats are shown inside the developer console of the browser.
 
 More information can be found [here](gogtools_whatitsworth.md).
+
