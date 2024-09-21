@@ -24,7 +24,7 @@ from requests import get as requestget
 # Our main, nice!
 if __name__ == "__main__":
     appName = "gogtools-version detector"
-    appVersion = "v0.0.3"
+    appVersion = "v0.0.3.1"
     appGithub = "https://github.com/jrie/gogtools"
 
     sysString = getSystemString()
@@ -49,13 +49,23 @@ if __name__ == "__main__":
 
     outputFile = stdout
 
+    def closeHTML():
+        if useHtml:
+            outputFile.write('</pre>')
+            outputFile.write(appHtmlEnd)
+            outputFile.close()
+
+    def addHTML(string):
+        if useHtml:
+            outputFile.write(string)
+
     def printVersionAndSystem(forcePrint=False):
         global hasPrinted
         if hasPrinted and not forcePrint:
             return
 
         if useHtml:
-            outputFile.write('<pre>')
+            addHTML('<pre>')
             appGithubUrl = f'<a href="{appGithub}">{appGithub}</a>'
             print(
                 f"You are running {appName} {appVersion}\n<br>For details, visit Github @ {appGithubUrl}",
@@ -67,33 +77,21 @@ if __name__ == "__main__":
                 file=outputFile
             )
 
-        if useHtml:
-            outputFile.write('</pre>')
-
-        if useHtml:
-            outputFile.write('<pre>')
+        addHTML('</pre><pre>')
 
         print(
             f'{appName} called with the following parameters: "{argv[1:]}"', file=outputFile
         )
 
-        if useHtml:
-            outputFile.write('</pre><pre>')
+        addHTML('</pre><pre>')
 
         if sysString == "":
-            if useHtml:
-                outputFile.write('<h2>')
-
             print(
                 f"{appName}: Operating system is not detected in script.\nPlease report this at Github @ {
                     appGithub}", file=outputFile
             )
 
-            if useHtml:
-                outputFile.write('</h2>')
-                outputFile.write(appHtmlEnd + '\n')
-                outputFile.close()
-
+            closeHTML()
             exit(1)
         else:
             print(f'{appName}: Your operating system is reported as "{
@@ -107,9 +105,7 @@ if __name__ == "__main__":
 
     if len(argv) == 1:
         printVersionAndSystem()
-        if useHtml:
-            outputFile.write('<pre>')
-
+        addHTML('<pre>')
         print(f"{appName}: Running in current folder.\n", file=outputFile)
     else:
         options, arguments = getopt(
@@ -121,7 +117,7 @@ if __name__ == "__main__":
                 printVersionAndSystem(forcePrint=True)
                 useHtml = True
                 outputFile = open(f'gt-gvd-output_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.html', "w")
-                outputFile.write(appHtmlStart + '\n')
+                addHTML(appHtmlStart + '\n')
 
         for option, value in options:
             if option == "-i":
@@ -139,24 +135,16 @@ if __name__ == "__main__":
                     print(
                         f'{appName}: Unknown os string "-o osName" specified.\nUse "windows", "linux" or "osx" \nExiting.', file=outputFile)
 
-                    if useHtml:
-                        outputFile.write(appHtmlEnd + '\n')
-                        outputFile.close()
-
+                    closeHTML()
                     exit(6)
 
         if gogDirectory is None:
             printVersionAndSystem()
-            if useHtml:
-                outputFile.write('<pre>')
 
             print(
                 f'{appName}: No input directory with "-i folder" specified, exiting.', file=outputFile)
 
-            if useHtml:
-                outputFile.write('</pre>')
-                outputFile.close()
-
+            closeHTML()
             exit(2)
 
         if osexists(gogDirectory):
@@ -171,18 +159,13 @@ if __name__ == "__main__":
                 print(f'{appName}: "{
                       gogDirectory}" is not a directory.', file=outputFile)
 
-                if useHtml:
-                    outputFile.write('</pre>')
-                    outputFile.close()
+                closeHTML()
                 exit(3)
         else:
             printVersionAndSystem()
             print(f'{appName}: "{gogDirectory}" is not existing.', file=outputFile)
 
-            if useHtml:
-                outputFile.write('</pre>')
-                outputFile.close()
-
+            closeHTML()
             exit(4)
 
     printVersionAndSystem()
@@ -206,11 +189,9 @@ if __name__ == "__main__":
         print(f"{appName}: HTML generation disabled.", file=outputFile)
 
     if makeRemoteCheck or ignoreDLC:
-        if useHtml:
-            outputFile.write('</pre>')
+        addHTML('</pre>')
 
-    if useHtml:
-        outputFile.write('<pre>')
+    addHTML('<pre>')
 
     if useHtml:
         print(
@@ -218,8 +199,7 @@ if __name__ == "__main__":
     else:
         print(f"\n{appName}: Starting detection.. this might take a moment.\n", file=outputFile)
 
-    if useHtml:
-        outputFile.write('</pre><pre>')
+    addHTML('</pre><pre>')
 
     gameRootFolder = f"{gogDirectory}{pathSeparator}"
     detectedGameFolders = sorted(oslistdir(gameRootFolder))
@@ -278,11 +258,7 @@ if __name__ == "__main__":
                             inputFile}".\nPlease report this at Github @ {appGithub}', file=outputFile
                     )
 
-                    if useHtml:
-                        outputFile.write('</pre>')
-                        outputFile.write(appHtmlEnd)
-                        outputFile.close()
-
+                    closeHTML()
                     exit(5)
 
                 if "gameId" in jsonKeys:
@@ -293,11 +269,7 @@ if __name__ == "__main__":
                             inputFile}".\nPlease report this at Github @ {appGithub}', file=outputFile
                     )
 
-                    if useHtml:
-                        outputFile.write('</pre>')
-                        outputFile.write(appHtmlEnd)
-                        outputFile.close()
-
+                    closeHTML()
                     exit(5)
 
                 if "version" in jsonKeys:
@@ -366,6 +338,8 @@ if __name__ == "__main__":
                                 f'{appName}: Error reading game info "{gameName}" from Gog.com.. error code: {
                                     gogData.status_code}\nCheck your internet connection.\nIf the error persists, please report this at Github @ {appGithub}', file=outputFile
                             )
+
+                            closeHTML()
                             exit(6)
 
                         timesleep(15)
@@ -451,10 +425,11 @@ if __name__ == "__main__":
             gogStatus[gameId]['name'] = gameNameString
             gogStatus[gameId]['link'] = gogItemLink
 
-    if useHtml:
-        outputFile.write('</pre><pre>')
+    addHTML('</pre><pre>')
 
-    print(164 * '-', file=outputFile)
+    if not useHtml:
+        print(164 * '-', file=outputFile)
+
     for game in sorted(detectedGames):
         gameId = gamesProcessed[game]
         status = gogStatus[gameId]['text']
@@ -476,12 +451,7 @@ if __name__ == "__main__":
     print(f"\n{appName}: Detected {countGames} game(s) and {
           countDLCs} DLC(s).", file=outputFile)
 
-    if useHtml:
-        print(f"{appName}: Finished run. Enjoy your day!", file=outputFile)
-
+    addHTML(f"{appName}: Finished run. Enjoy your day!")
     print(f"{appName}: Finished run. Enjoy your day!")
 
-    if useHtml:
-        outputFile.write('</pre>' + appHtmlEnd + '\n')
-
-    outputFile.close()
+    closeHTML()
