@@ -14,7 +14,7 @@ from requests import get as requestget
 # Our main, nice!
 if __name__ == "__main__":
     appName = "gogtools-game-id-retriever"
-    appVersion = "v0.0.1"
+    appVersion = "v0.0.2"
     appGithub = "https://github.com/jrie/gogtools"
 
     currentPage = 1
@@ -71,6 +71,7 @@ if __name__ == "__main__":
                     gameItems[intIndex]['title'] = item["title"]
                     gameItems[intIndex]['slug'] = item["slug"]
                     gameItems[intIndex]['productType'] = item["productType"]
+                    gameItems[intIndex]['url'] = item["storeLink"]
 
                     print(f'{index:<2}) {itemType:<9} "{item["title"]}"')
 
@@ -111,7 +112,8 @@ if __name__ == "__main__":
                 inputSelection = int(inputSelection, 10)
                 if inputSelection in gameItems.keys():
                     currentItem = gameItems[inputSelection]
-                    print(f'{appName} : Entry information.\n[TITLE   ] {currentItem["title"]}\n[TYPE    ] {currentItem["productType"]}\n[GAME ID ] {currentItem["gameId"]}\n[URL     ] {currentItem["slug"]}')
+                    print(f'{appName} : Entry information.\n[TITLE   ] {currentItem["title"]}\n[TYPE    ] {
+                          currentItem["productType"]}\n[GAME ID ] {currentItem["gameId"]}\n[URL     ] {currentItem["url"]}\n[SLUG    ] {currentItem["slug"]}')
 
                     print('')
                     inputSelection = input('[Exit by entering "x"] --- Add selection information to "{versionRetrieverFile}" (y/n): ')
