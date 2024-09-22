@@ -246,6 +246,9 @@ if __name__ == "__main__":
     countDLCs = 0
     internalId = 0
 
+    noURLstring = 'No URL available'
+    missingGameId = "[GAME ID MISSING]"
+
     for versionFile in versionFiles:
         isDLC = False
         hasInteralId = False
@@ -261,7 +264,11 @@ if __name__ == "__main__":
                 else:
                     gameId = internalId
                     hasInteralId = True
+
+                    print(f'{appName}: [Status: ---] : "{
+                          gameName}" {missingGameId}', file=outputFile)
                     internalId += 1
+                    gogItemLink = ""
 
             elif versionFile.endswith(".info"):
                 jsonData = jsonload(inputFile)
@@ -454,39 +461,43 @@ if __name__ == "__main__":
         status = gogStatus[gameId]['text']
         gameLink = gogStatus[gameId]['link']
 
-        gameLinkUrl = ""
-        if useHtml:
-            gameLinkUrl = f'<a href="{gameLink}">{gogStatus[gameId]["name"]}</a>'
-
-        if gameLinkUrl != "":
-            gogStatus[gameId]["text"] = gogStatus[gameId]["text"].replace(gogStatus[gameId]["name"], gameLinkUrl)
+        gameLinkUrl = noURLstring
+        if gameLink != "":
+            if useHtml:
+                gameLinkUrl = f'<a href="{gameLink}">{gogStatus[gameId]["name"]}</a>'
+                gogStatus[gameId]["text"] = gogStatus[gameId]["text"].replace(gogStatus[gameId]["name"], gameLinkUrl)
+            else:
+                gameLinkUrl = gameLink
 
         print(gogStatus[gameId]["text"], file=outputFile)
 
         if printUrls and not useHtml:
-            print(f'{" ":>60}{urlTypeString}{" ":>5}{gogStatus[gameId]["link"]}', file=outputFile)
+            print(f'{" ":>60}{urlTypeString}{" ":>5}{gameLinkUrl}', file=outputFile)
 
         if gameId in detectedDLCs:
             for dlc in detectedDLCs[gameId]:
                 dlcStatus = gogStatus[dlc]["text"]
                 dlcLink = gogStatus[dlc]["link"]
                 detectedGameFoldersLinkUrl = ""
-                dlcLinkUrl = ""
+                dlcLinkUrl = noURLstring
 
-                if useHtml:
-                    dlcLinkUrl = f'<a href="{dlcLink}">{gogStatus[dlc]["name"]}</a>'
-
-                if dlcLinkUrl != "":
-                    gogStatus[dlc]["text"] = gogStatus[dlc]["text"].replace(gogStatus[dlc]["name"], dlcLinkUrl)
+                if dlcLink != "":
+                    if useHtml:
+                        dlcLinkUrl = f'<a href="{dlcLink}">{
+                            gogStatus[dlc]["name"]}</a>'
+                        gogStatus[dlc]["text"] = gogStatus[dlc]["text"].replace(
+                            gogStatus[dlc]["name"], dlcLinkUrl)
+                    else:
+                        dlcLinkUrl = dlcLink
 
                 print(gogStatus[dlc]["text"], file=outputFile)
 
                 if printUrls and not useHtml:
-                    print(f'{" ":>60}{urlTypeString}{" ":>5}{gogStatus[dlc]["link"]}', file=outputFile)
+                    print(f'{" ":>60}{urlTypeString}{" ":>5}{dlcLinkUrl}', file=outputFile)
 
         print('', file=outputFile)
 
-    print(f"\n{appName}: Detected {countGames} game(s) and {
+    print(f"\n{appName}: Detected {countGames} game(s) ({internalId} without game id) and {
           countDLCs} DLC(s).", file=outputFile)
 
     addHTML(f"{appName}: Finished run. Enjoy your day!")
