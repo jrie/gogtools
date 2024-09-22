@@ -3,6 +3,29 @@ A collection of tools to work on and with Gog.com
 
 ## Tools of trade
 
+The Python scripts:
+- gogtools - game-id-retriever
+- gogtools - version detector and retriever
+
+.. work on *windows*, *linux*, and *osx* and require only `python-requests` no other magic involved.
+
+
+The Javascript:
+- whatitsworth.js
+
+.. works on every browser as a Greasemonkey or Tampermonkey userscript.
+
+## Overview of the tools
+
+### gogtools - game-id-retriever
+A python script which has a console interface to search Gog.com for *games*, *dlc* and *packs*. This tools was made in reason that some of the version file, used by *gogtools-version detector.py* do not always provide a *game id* which is used to distinguish games and other contents of Gog.com
+
+
+The script provides a search interface and allows to store game information in a file, currently `gt-gid.json` - as of time of writing, the *version detector.py* does *not yet* use this file.
+
+#### Screenshot of usage:
+![gogtools-game-id-retriever_v0 0 1](https://github.com/user-attachments/assets/9f64255e-f64b-4fde-9ab6-23b0ab859c8d)
+
 ### gogtools - version detector and retriever
 A *windows*, *linux*, and *osx* Python script which attempts to identify and list the versions of installed Gog games and DLC, as well as an option to compare versions online at Gog.com
 
