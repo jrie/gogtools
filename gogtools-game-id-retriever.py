@@ -135,7 +135,7 @@ if __name__ == "__main__":
                             outputFile.close()
 
                         if entryExists:
-                            print(f'{appName} : "{versionRetrieverFile}" already has: "{currentItem["title"]}" with game id "{currentItem["gameId"]}\na"')
+                            print(f'{appName} : "{versionRetrieverFile}" already has: "{currentItem["title"]}" with game id "{currentItem["gameId"]}"\n')
                             sleep(3)
                         else:
                             outputFile = open(versionRetrieverFile, 'a')
