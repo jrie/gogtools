@@ -40,7 +40,7 @@ if __name__ == "__main__":
                 print(f'{appName} [ ERROR ] : Search value must be at least 3 characters long.')
                 continue
 
-        searchURL = f'https://catalog.gog.com/v1/catalog?limit=20&locale=en-US&page={currentPage}&productType=in:game,pack,dlc&query=like:{searchValue}'
+        searchURL = f'https://catalog.gog.com/v1/catalog?limit=20&locale=en-US&page={currentPage}&order=desc:score&productType=in:game,pack,dlc&query=like:{searchValue}'
         gogData = requestget(searchURL, timeout=30)
 
         if gogData.status_code == 200:
