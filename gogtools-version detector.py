@@ -241,7 +241,8 @@ if __name__ == "__main__":
     internalId = 0
 
     noURLstring = 'No URL available'
-    missingGameId = "[GAME ID MISSING]"
+    missingGameId = " [GAME ID MISSING] "
+    missingGameUrl = " [URL ERROR] "
 
     for versionFile in versionFiles:
         isDLC = False
@@ -263,6 +264,7 @@ if __name__ == "__main__":
                           gameName}" {missingGameId}', file=outputFile)
                     internalId += 1
                     gogItemLink = ""
+                    gog = 0
 
             elif versionFile.endswith(".info"):
                 jsonData = jsonload(inputFile)
@@ -347,6 +349,7 @@ if __name__ == "__main__":
 
                     if gogData.status_code == 404:
                         gogErrorCode = gogData.status_code
+                        gogItemLink = ""
                         break
 
                     if gogData.status_code != 200:
@@ -442,6 +445,7 @@ if __name__ == "__main__":
 
             gogStatus[gameId]['name'] = gameNameString
             gogStatus[gameId]['link'] = gogItemLink
+            gogStatus[gameId]['urlstatus'] = gogErrorCode
 
     addHTML('</pre><pre>')
 
@@ -455,7 +459,11 @@ if __name__ == "__main__":
         status = gogStatus[gameId]['text']
         gameLink = gogStatus[gameId]['link']
 
-        gameLinkUrl = f'{noURLstring} {missingGameId}'
+        if gogStatus[gameId]['urlstatus'] == 404:
+            gameLinkUrl = f'{noURLstring} {missingGameUrl}'
+        elif gogStatus[gameId]['urlstatus'] == 0:
+            gameLinkUrl = f'{noURLstring} {missingGameId}'
+
         if gameLink != "":
             if useHtml:
                 gameLinkUrl = f'<a href="{gameLink}">{gogStatus[gameId]["name"]}</a>'
@@ -477,7 +485,12 @@ if __name__ == "__main__":
                 dlcStatus = gogStatus[dlc]["text"]
                 dlcLink = gogStatus[dlc]["link"]
                 detectedGameFoldersLinkUrl = ""
-                dlcLinkUrl = f'{noURLstring} {missingGameId}'
+                dlcLinkUrl = f'{noURLstring}'
+
+                if gogStatus[dlc]['urlstatus'] == 404:
+                    dlcLinkUrl = f'{noURLstring} {missingGameUrl}'
+                elif gogStatus[dlc]['urlstatus'] == 0:
+                    dlcLinkUrl = f'{noURLstring} {missingGameId}'
 
                 if dlcLink != "":
                     if useHtml:
