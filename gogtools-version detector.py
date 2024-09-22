@@ -475,7 +475,8 @@ if __name__ == "__main__":
 
         if printUrls:
             if useHtml and gameLink != "":
-                print(f'{" ":>60}{urlTypeString}{" ":>5}{gameLink}', file=outputFile)
+                gameLinkUrl = f'<a href="{gameLink}">{gameLink}</a>'
+                print(f'{" ":>60}{urlTypeString}{" ":>5}{gameLinkUrl}', file=outputFile)
             else:
                 print(f'{" ":>60}{urlTypeString}{" ":>5}{gameLinkUrl}', file=outputFile)
 
@@ -494,8 +495,7 @@ if __name__ == "__main__":
 
                 if dlcLink != "":
                     if useHtml:
-                        dlcLinkUrl = f'<a href="{dlcLink}">{
-                            gogStatus[dlc]["name"]}</a>'
+                        dlcLinkUrl = f'<a href="{dlcLink}">{gogStatus[dlc]["name"]}</a>'
                         gogStatus[dlc]["text"] = gogStatus[dlc]["text"].replace(
                             gogStatus[dlc]["name"], dlcLinkUrl)
                     else:
@@ -505,7 +505,8 @@ if __name__ == "__main__":
 
                 if printUrls:
                     if useHtml and dlcLink != "":
-                        print(f'{" ":>60}{urlTypeString}{" ":>5}{dlcLink}', file=outputFile)
+                        dlcLinkUrl = f'<a href="{dlcLink}">{dlcLink}</a>'
+                        print(f'{" ":>60}{urlTypeString}{" ":>5}{dlcLinkUrl}', file=outputFile)
                     else:
                         print(f'{" ":>60}{urlTypeString}{" ":>5}{dlcLinkUrl}', file=outputFile)
 
