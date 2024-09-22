@@ -24,7 +24,7 @@ from requests import get as requestget
 # Our main, nice!
 if __name__ == "__main__":
     appName = "gogtools-version detector"
-    appVersion = "v0.0.3.1"
+    appVersion = "v0.0.3.2"
     appGithub = "https://github.com/jrie/gogtools"
 
     sysString = getSystemString()
@@ -437,16 +437,26 @@ if __name__ == "__main__":
 
         gameLinkUrl = ""
         if useHtml:
-            gameLinkUrl = f'<a style="display: inline;" href="{gameLink}">{gogStatus[gameId]['name']}</a>'
+            gameLinkUrl = f'<a href="{gameLink}">{gogStatus[gameId]["name"]}</a>'
 
-        if gameLinkUrl != '':
-            gogStatus[gameId]["text"] = gogStatus[gameId]["text"].replace(gogStatus[gameId]['name'], gameLinkUrl)
+        if gameLinkUrl != "":
+            gogStatus[gameId]["text"] = gogStatus[gameId]["text"].replace(gogStatus[gameId]["name"], gameLinkUrl)
 
         print(gogStatus[gameId]["text"], file=outputFile)
 
         if gameId in detectedDLCs:
             for dlc in detectedDLCs[gameId]:
-                print(gogStatus[dlc], file=outputFile)
+                dlcStatus = gogStatus[dlc]["text"]
+                dlcLink = gogStatus[dlc]["link"]
+                detectedGameFoldersLinkUrl = ""
+
+                if useHtml:
+                    dlcLinkUrl = f'<a href="{dlcLink}">{gogStatus[dlc]["name"]}</a>'
+
+                if dlcLinkUrl != "":
+                    gogStatus[dlc]["text"] = gogStatus[dlc]["text"].replace(gogStatus[dlc]["name"], dlcLinkUrl)
+
+                print(gogStatus[dlc]["text"], file=outputFile)
 
     print(f"\n{appName}: Detected {countGames} game(s) and {
           countDLCs} DLC(s).", file=outputFile)
