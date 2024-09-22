@@ -24,7 +24,7 @@ from requests import get as requestget
 # Our main, nice!
 if __name__ == "__main__":
     appName = "gogtools-version detector"
-    appVersion = "v0.0.4.0"
+    appVersion = "v0.0.5.0"
     appGithub = "https://github.com/jrie/gogtools"
 
     sysString = getSystemString()
@@ -193,13 +193,7 @@ if __name__ == "__main__":
             f"{appName}: HTML generation disabled. Enable using '-w' parameter.", file=outputFile)
 
     if printUrls:
-        if not useHtml:
-            print(
-                f"{appName}: URL console output is enabled.", file=outputFile)
-        else:
-            print(
-                f"{appName}: URL console output is disabled due to output to HTML '-w' parameter.", file=outputFile)
-            printUrls = False
+        print(f"{appName}: URL console output is enabled.", file=outputFile)
     else:
         print(
             f"{appName}: URL console output disabled. Enable using '-u' parameter.", file=outputFile)
@@ -461,7 +455,7 @@ if __name__ == "__main__":
         status = gogStatus[gameId]['text']
         gameLink = gogStatus[gameId]['link']
 
-        gameLinkUrl = noURLstring
+        gameLinkUrl = f'{noURLstring} {missingGameId}'
         if gameLink != "":
             if useHtml:
                 gameLinkUrl = f'<a href="{gameLink}">{gogStatus[gameId]["name"]}</a>'
@@ -471,15 +465,19 @@ if __name__ == "__main__":
 
         print(gogStatus[gameId]["text"], file=outputFile)
 
-        if printUrls and not useHtml:
-            print(f'{" ":>60}{urlTypeString}{" ":>5}{gameLinkUrl}', file=outputFile)
+        if printUrls:
+            if useHtml and gameLink != "":
+                print(f'{" ":>60}{urlTypeString}{" ":>5}{gameLink}', file=outputFile)
+            else:
+                print(f'{" ":>60}{urlTypeString}{" ":>5}{gameLinkUrl}', file=outputFile)
+
 
         if gameId in detectedDLCs:
             for dlc in detectedDLCs[gameId]:
                 dlcStatus = gogStatus[dlc]["text"]
                 dlcLink = gogStatus[dlc]["link"]
                 detectedGameFoldersLinkUrl = ""
-                dlcLinkUrl = noURLstring
+                dlcLinkUrl = f'{noURLstring} {missingGameId}'
 
                 if dlcLink != "":
                     if useHtml:
@@ -492,8 +490,11 @@ if __name__ == "__main__":
 
                 print(gogStatus[dlc]["text"], file=outputFile)
 
-                if printUrls and not useHtml:
-                    print(f'{" ":>60}{urlTypeString}{" ":>5}{dlcLinkUrl}', file=outputFile)
+                if printUrls:
+                    if useHtml and dlcLink != "":
+                        print(f'{" ":>60}{urlTypeString}{" ":>5}{dlcLink}', file=outputFile)
+                    else:
+                        print(f'{" ":>60}{urlTypeString}{" ":>5}{dlcLinkUrl}', file=outputFile)
 
         print('', file=outputFile)
 
