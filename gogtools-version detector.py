@@ -24,7 +24,7 @@ from requests import get as requestget
 # Our main, nice!
 if __name__ == "__main__":
     appName = "gogtools-version detector"
-    appVersion = "v0.0.3.2"
+    appVersion = "v0.0.4.0"
     appGithub = "https://github.com/jrie/gogtools"
 
     sysString = getSystemString()
@@ -39,6 +39,7 @@ if __name__ == "__main__":
     makeRemoteCheck = False
     ignoreDLC = False
     useHtml = False
+    printUrls = False
 
     hasPrinted = False
     versionFiles = []
@@ -109,7 +110,7 @@ if __name__ == "__main__":
         print(f"{appName}: Running in current folder.\n", file=outputFile)
     else:
         options, arguments = getopt(
-            argv[1:], "i:o:rdw", ["gogDirectory", "operatingSystem", "makeRemoteCheck", "ignoreDLC", "writePrintToFile"]
+            argv[1:], "i:o:rdwu", ["gogDirectory", "operatingSystem", "makeRemoteCheck", "ignoreDLC", "writePrintToFile", "printUrls"]
         )
 
         for option, value in options:
@@ -137,6 +138,8 @@ if __name__ == "__main__":
 
                     closeHTML()
                     exit(6)
+            elif option == '-u':
+                printUrls = True
 
         if gogDirectory is None:
             printVersionAndSystem()
@@ -186,7 +189,21 @@ if __name__ == "__main__":
     if useHtml:
         print(f'{appName}: HTML generation enabled.', file=outputFile)
     else:
-        print(f"{appName}: HTML generation disabled.", file=outputFile)
+        print(
+            f"{appName}: HTML generation disabled. Enable using '-w' parameter.", file=outputFile)
+
+    if printUrls:
+        if not useHtml:
+            print(
+                f"{appName}: URL console output is enabled.", file=outputFile)
+        else:
+            print(
+                f"{appName}: URL console output is disabled due to output to HTML '-w' parameter.", file=outputFile)
+            printUrls = False
+    else:
+        print(
+            f"{appName}: URL console output disabled. Enable using '-u' parameter.", file=outputFile)
+
 
     if makeRemoteCheck or ignoreDLC:
         addHTML('</pre>')
@@ -430,6 +447,8 @@ if __name__ == "__main__":
     if not useHtml:
         print(164 * '-', file=outputFile)
 
+    urlTypeString = ' [ URL  ]'
+
     for game in sorted(detectedGames):
         gameId = gamesProcessed[game]
         status = gogStatus[gameId]['text']
@@ -444,11 +463,15 @@ if __name__ == "__main__":
 
         print(gogStatus[gameId]["text"], file=outputFile)
 
+        if printUrls and not useHtml:
+            print(f'{" ":>60}{urlTypeString}{" ":>5}{gogStatus[gameId]["link"]}', file=outputFile)
+
         if gameId in detectedDLCs:
             for dlc in detectedDLCs[gameId]:
                 dlcStatus = gogStatus[dlc]["text"]
                 dlcLink = gogStatus[dlc]["link"]
                 detectedGameFoldersLinkUrl = ""
+                dlcLinkUrl = ""
 
                 if useHtml:
                     dlcLinkUrl = f'<a href="{dlcLink}">{gogStatus[dlc]["name"]}</a>'
@@ -457,6 +480,11 @@ if __name__ == "__main__":
                     gogStatus[dlc]["text"] = gogStatus[dlc]["text"].replace(gogStatus[dlc]["name"], dlcLinkUrl)
 
                 print(gogStatus[dlc]["text"], file=outputFile)
+
+                if printUrls and not useHtml:
+                    print(f'{" ":>60}{urlTypeString}{" ":>5}{gogStatus[dlc]["link"]}', file=outputFile)
+
+        print('', file=outputFile)
 
     print(f"\n{appName}: Detected {countGames} game(s) and {
           countDLCs} DLC(s).", file=outputFile)
