@@ -31,4 +31,5 @@ Option/Switches:
 - `-r`: No value, request the online Gog API for the current versions.
 - `-o value`: Use with `-r` to check for game/dlcs installers for one particular operating systems, possible value is `windows`, `linux` or `osx`.
 - `-w`: No value, generate output HTML file - filename example: `gt-gvd-output_2024-09-20_21-50-00.html`
+- `-u`: No value, print URLs to console, is disabled if `-w` HTML output is used.
 
