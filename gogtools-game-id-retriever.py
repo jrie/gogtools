@@ -14,7 +14,7 @@ from requests import get as requestget
 # Our main, nice!
 if __name__ == "__main__":
     appName = "gogtools-game-id-retriever"
-    appVersion = "v0.0.2"
+    appVersion = "v0.0.3"
     appGithub = "https://github.com/jrie/gogtools"
 
     currentPage = 1
@@ -29,8 +29,7 @@ if __name__ == "__main__":
     while True:
         if doSearch:
             currentPage = 1
-            print('')
-            searchValue = input('[Exit by entering "x"] --- Search Gog.com ==> ')
+            searchValue = input('\n[Exit by entering "x"] --- Search Gog.com ==> ')
             searchValue = searchValue.lower().replace('_', ' ').strip()
 
             if searchValue == "x":
@@ -77,12 +76,27 @@ if __name__ == "__main__":
 
                 if jsonData['pages'] != 1:
                     print(f'\nYou are on page: {currentPage} of {jsonData["pages"]}')
-                    print(f'{appName} use "{forwardOption}" to go forward and "{
-                          backwardOption}" to go backward')
+                    print(f'{appName} use "{forwardOption}" to go forward, "{
+                          backwardOption}" to go backward and "=" following a page number to jump to page')
 
-                print('')
-                inputSelection = input('[Continue search by entering "c" or exit using "x"] --- Gog.com selection: ')
+                inputSelection = input('\n[Continue search by entering "c" or exit using "x"] --- Gog.com selection: ')
                 inputSelection = inputSelection.lower().replace('_', ' ').strip()
+
+                if inputSelection.startswith('='):
+                    try:
+                        pageNumber = int(inputSelection[1:].strip())
+                        if pageNumber >= 1 and pageNumber <= jsonData["pages"]:
+                            currentPage = pageNumber
+                            print(f'Jumping to page "{pageNumber}".\n')
+                        else:
+                            print(f'The provided page number "{pageNumber}" is out of range. There are {jsonData["pages"]} result pages.\n')
+
+                        doSearch = False
+                        continue
+                    except ValueError:
+                        print('Use "=1" to jump to page one, use "=6" to jump to page six.\n')
+                        doSearch = False
+                        continue
 
                 if inputSelection == "c":
                     doSearch = True
@@ -116,7 +130,7 @@ if __name__ == "__main__":
                           currentItem["productType"]}\n[GAME ID ] {currentItem["gameId"]}\n[URL     ] {currentItem["url"]}\n[SLUG    ] {currentItem["slug"]}')
 
                     print('')
-                    inputSelection = input('[Exit by entering "x"] --- Add selection information to "{versionRetrieverFile}" (y/n): ')
+                    inputSelection = input(f'[Exit by entering "x"] --- Add selection information to "{versionRetrieverFile}" (y/n): ')
                     inputSelection = inputSelection.lower().replace('_', ' ').strip()
 
                     if inputSelection == "x":
@@ -126,23 +140,20 @@ if __name__ == "__main__":
 
                         entryExists = False
                         if osexists(versionRetrieverFile) and osisfile(versionRetrieverFile):
-                            outputFile = open(versionRetrieverFile, 'r')
-                            existingData = outputFile.readlines()
-                            dumpData = jsondump(currentItem)
-                            for line in existingData:
-                                if line.startswith(dumpData):
-                                    entryExists = True
-                                    break
-
-                            outputFile.close()
+                            with open(versionRetrieverFile, 'r') as inputFile:
+                                dumpData = jsondump(currentItem)
+                                for line in inputFile:
+                                    if line.startswith(dumpData):
+                                        entryExists = True
+                                        break
 
                         if entryExists:
                             print(f'{appName} : "{versionRetrieverFile}" already has: "{currentItem["title"]}" with game id "{currentItem["gameId"]}"\n')
                             sleep(3)
                         else:
-                            outputFile = open(versionRetrieverFile, 'a')
-                            outputFile.write(jsondump(currentItem) + '\n')
-                            outputFile.close()
+                            with open(versionRetrieverFile, 'a') as outputFile:
+                                outputFile.write(jsondump(currentItem) + '\n')
+
                             print(f'{appName} : "{versionRetrieverFile}" entry added.\n')
                             sleep(3)
 
