@@ -24,7 +24,7 @@ from requests import get as requestget
 # Our main, nice!
 if __name__ == "__main__":
     appName = "gogtools-version detector"
-    appVersion = "v0.0.5.0"
+    appVersion = "v0.0.6.0"
     appGithub = "https://github.com/jrie/gogtools"
 
     sysString = getSystemString()
@@ -41,14 +41,17 @@ if __name__ == "__main__":
     useHtml = False
     printUrls = False
 
-    hasPrinted = False
-    versionFiles = []
+    gameIdFile = "gt-gid.json"
+    useGameIdFile = False
 
     cssStyle = 'body { background-color: #111; color: green; font-size: 1rem; } pre { background-color: #333; color: orange; font-size: 0.75rem; padding: 0.25rem 0.65rem; } a { text-decoration: none; color: green; font-size: inherit;} a:hover { cursor: pointer; color: lightgreen; }'
     appHtmlStart = f'<DOCTYPE html><html><head><title>{appName} {appVersion}</title><meta charset="utf-8" /><style type="text/css">{cssStyle}</style><body>'
     appHtmlEnd = '</body></html>'
 
     outputFile = stdout
+
+    hasPrinted = False
+    versionFiles = []
 
     def closeHTML():
         if useHtml:
@@ -110,7 +113,7 @@ if __name__ == "__main__":
         print(f"{appName}: Running in current folder.\n", file=outputFile)
     else:
         options, arguments = getopt(
-            argv[1:], "i:o:rdwu", ["gogDirectory", "operatingSystem", "makeRemoteCheck", "ignoreDLC", "writePrintToFile", "printUrls"]
+            argv[1:], "i:o:rdwuc", ["gogDirectory", "operatingSystem", "makeRemoteCheck", "ignoreDLC", "writePrintToFile", "printUrls", "catchGameId"]
         )
 
         for option, value in options:
@@ -140,6 +143,19 @@ if __name__ == "__main__":
                     exit(6)
             elif option == '-u':
                 printUrls = True
+            elif option == '-c':
+                useGameIdFile = True
+                if not osexists(gameIdFile):
+                    printVersionAndSystem()
+                    print(f"\n{appName}: Game ID file '{gameIdFile}' does not exist.", file=outputFile)
+                    closeHTML()
+                    exit(7)
+
+                if not osisfile(gameIdFile):
+                    printVersionAndSystem()
+                    print(f"\n{appName}: Game ID file '{gameIdFile}' is not a file.", file=outputFile)
+                    closeHTML()
+                    exit(8)
 
         if gogDirectory is None:
             printVersionAndSystem()
@@ -198,6 +214,12 @@ if __name__ == "__main__":
         print(
             f"{appName}: URL console output disabled. Enable using '-u' parameter.", file=outputFile)
 
+    if useGameIdFile:
+        print(f"{appName}: Read game id file '{gameIdFile}' is enabled.", file=outputFile)
+    else:
+        print(
+            f"{appName}: Read game id file '{gameIdFile}' is. Enable using '-c' parameter.", file=outputFile)
+
 
     if makeRemoteCheck or ignoreDLC:
         addHTML('</pre>')
@@ -244,10 +266,31 @@ if __name__ == "__main__":
     missingGameId = " [GAME ID MISSING] "
     missingGameUrl = " [URL ERROR] "
 
+    gameIdData = {}
+
+    if useGameIdFile:
+        with open(gameIdFile, "r") as inputFile:
+            for line in inputFile:
+                jsonLine = jsonloads(line)
+                gameId = jsonLine['gameId']
+                gameTitle = jsonLine['title']
+                gameSlug = jsonLine['slug']
+                gameType = jsonLine['productType']
+                gameUrl = jsonLine['url']
+
+                gameIdData[gameTitle.lower()] = {
+                    'gameId': int(gameId),
+                    'title': gameTitle,
+                    'slug': gameSlug,
+                    'type': gameType,
+                    'url': gameUrl
+                }
+
     for versionFile in versionFiles:
         isDLC = False
         hasInteralId = False
         hasOSsupport = False
+        hasGameIdMatch = False
         with open(versionFile, "r", encoding="utf-8") as inputFile:
             if versionFile.endswith("gameinfo"):
                 fileData = inputFile.read().split("\n", 5)
@@ -257,14 +300,22 @@ if __name__ == "__main__":
                 if len(fileData) > 4:
                     gameId = fileData[4]
                 else:
-                    gameId = internalId
-                    hasInteralId = True
+                    if useGameIdFile:
+                        gameNameLower = gameName.lower()
+                        for gameNameKey in gameIdData.keys():
+                            if gameNameKey.find(gameNameLower) != -1:
+                                gameId = gameIdData[gameNameKey]['gameId']
+                                hasGameIdMatch = True
+                                break
 
-                    print(f'{appName}: [Status: ---] : "{
-                          gameName}" {missingGameId}', file=outputFile)
-                    internalId += 1
-                    gogItemLink = ""
-                    gog = 0
+                    if not hasGameIdMatch:
+                        gameId = internalId
+                        hasInteralId = True
+
+                        print(f'{appName}: [Status: ---] : "{gameName}" {missingGameId}', file=outputFile)
+                        internalId += 1
+                        gogItemLink = ""
+                        gog = 0
 
             elif versionFile.endswith(".info"):
                 jsonData = jsonload(inputFile)
@@ -343,9 +394,11 @@ if __name__ == "__main__":
                         f"https://api.gog.com/products/{gameId}?locale=en_US&expand=downloads",
                         timeout=30,
                     )
-
+                    gameIdMatchString = ""
+                    if hasGameIdMatch:
+                        gameIdMatchString = f'  [MATCHED GAME ID]'
                     print(f'{appName}: [Status: {gogData.status_code}] : "{
-                          gameName}"', file=outputFile)
+                          gameName}"{gameIdMatchString}', file=outputFile)
 
                     if gogData.status_code == 404:
                         gogErrorCode = gogData.status_code
@@ -380,7 +433,11 @@ if __name__ == "__main__":
                             if installer["name"] != gameName:
                                 pass
 
-                            gogVersionOnline = installer["version"].lstrip("vV")
+                            if installer["version"] != None:
+                                gogVersionOnline = installer["version"]
+                            else:
+                                gogVersionOnline = "No version reported by Gog"
+
                             hasVersion = True
                             hasOSsupport = True
                             break
