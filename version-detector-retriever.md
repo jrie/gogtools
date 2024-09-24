@@ -32,4 +32,5 @@ Option/Switches:
 - `-o value`: Use with `-r` to check for game/dlcs installers for one particular operating systems, possible value is `windows`, `linux` or `osx`.
 - `-w`: No value, generate output HTML file - filename example: `gt-gvd-output_2024-09-20_21-50-00.html`
 - `-u`: No value, print URLs to console/html
+- `-c`: Read `gt-gid.json` file created by `gogtools-game-id-retriever.py`
 
