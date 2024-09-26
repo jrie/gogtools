@@ -21,7 +21,7 @@ The Javascript:
 A python script which has a console interface to search Gog.com for *games*, *dlc* and *packs*. This tools was made in reason that some of the version file, used by *gogtools-version detector.py* do not always provide a *game id* which is used to distinguish games and other contents of Gog.com
 
 
-The script provides a search interface and allows to store game information in a file, currently `gt-gid.json` - as of time of writing, the *version detector.py* does *not yet* use this file.
+The script provides a search interface and allows to store game information in a file, currently `gt-gid.json` - as of time of writing, the *version detector.py* is able to use this file to supplement game information for online retrieval of the version.
 
 #### Screenshot of usage:
 ![gogtools-game-id-retriever_v0 0 1](https://github.com/user-attachments/assets/9f64255e-f64b-4fde-9ab6-23b0ab859c8d)
