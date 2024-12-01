@@ -24,7 +24,7 @@ from requests import get as requestget
 # Our main, nice!
 if __name__ == "__main__":
     appName = "gogtools-version detector"
-    appVersion = "v0.0.6.0"
+    appVersion = "v0.0.6.1"
     appGithub = "https://github.com/jrie/gogtools"
 
     sysString = getSystemString()
@@ -218,7 +218,7 @@ if __name__ == "__main__":
         print(f"{appName}: Read game id file '{gameIdFile}' is enabled.", file=outputFile)
     else:
         print(
-            f"{appName}: Read game id file '{gameIdFile}' is. Enable using '-c' parameter.", file=outputFile)
+            f"{appName}: Read game id file '{gameIdFile}' is disabled. Enable using '-c' parameter.", file=outputFile)
 
 
     if makeRemoteCheck or ignoreDLC:
