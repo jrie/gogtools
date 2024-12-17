@@ -572,6 +572,9 @@ if __name__ == "__main__":
     print(f"\n{appName}: Detected {countGames} game(s) ({internalId} without game id) and {
           countDLCs} DLC(s).", file=outputFile)
 
+    if useHtml:
+        print(f"{appName}: Created html output file: '{outputFile.name}'")
+
     addHTML(f"{appName}: Finished run. Enjoy your day!")
     print(f"{appName}: Finished run. Enjoy your day!")
 
