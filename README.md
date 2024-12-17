@@ -5,15 +5,15 @@ A collection of tools to work on and with Gog.com
 
 The Python scripts:
 - gogtools - game-id-retriever
-- gogtools - version detector and retriever
+- gogtools - version-detector-and-retriever
 
-.. work on *windows*, *linux*, and *osx* and require only `python-requests` no other magic involved.
+.. work on *windows*, *linux*, and *osx* and require only Python3 and `python-requests` no other magic involved.
 
 
 The Javascript:
 - whatitsworth.js
 
-.. works on every browser as a Greasemonkey or Tampermonkey userscript.
+.. works on every browser as a Greasemonkey, ViolentMonkey, or Tampermonkey userscript.
 
 ## Overview of the tools
 
@@ -31,7 +31,7 @@ A *windows*, *linux*, and *osx* Python script which attempts to identify and lis
 
 Also now supports HTML output using "-w" parameter. And display of optional URLS for console and HTML output.
 
-More information can be found [in the readme of gogtools - version detector and retriever](version-detector-retriever.md).
+More information can be found [in the readme of gogtools - version-detector-and-retriever](version-detector-retriever.md).
 
 #### Screenshot in Windows Powershell:
 ![version_detector_windows](https://github.com/jrie/gogtools/assets/5701785/0a18b287-5b09-464c-a3eb-01e3f96c3ac2)
